@@ -89,6 +89,7 @@ public enum Terrains implements Terrain {
         case FIGHTERS:
         case BANDITS:
         case PIRATES:
+        case BERSERKER:
           return 3;
         case NOMAD_TROOPER:
           return 5;
@@ -106,6 +107,7 @@ public enum Terrains implements Terrain {
         case FLIERS:
           return 1;
         case PIRATES:
+        case BERSERKER:
           return 2;
         case FOOT:
         case BANDITS:

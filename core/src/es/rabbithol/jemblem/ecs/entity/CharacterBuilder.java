@@ -6,12 +6,18 @@ import com.badlogic.ashley.core.Entity;
 import es.rabbithol.jemblem.ecs.component.*;
 
 public class CharacterBuilder {
+  private ExperienceComponent experience;
   private HealthComponent health;
   private InventoryComponent inventory;
   private PositionComponent position;
   private StatsComponent stats;
   private WeaponProficiencyComponent proficiency;
   private NameComponent name;
+
+  public CharacterBuilder experience(ExperienceComponent experience) {
+    this.experience = experience;
+    return this;
+  }
 
   public CharacterBuilder health(HealthComponent health) {
     this.health = health;
@@ -45,7 +51,7 @@ public class CharacterBuilder {
 
   public Entity build() {
     final Entity entity = new Entity();
-    for (Component component : new Component[]{health, inventory, position, stats, proficiency, name}) {
+    for (Component component : new Component[]{experience, health, inventory, position, stats, proficiency, name}) {
       if (component != null) {
         entity.add(component);
       }

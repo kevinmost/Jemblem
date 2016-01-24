@@ -148,6 +148,243 @@ public enum FEClasses implements FEClass {
     public @Nullable FEClass promotesTo() {
       return null;
     }
+  },
+  MYRMIDON_F("Myrmidon", MovementCostType.FOOT) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(15)
+          .strength(3)
+          .skill(9)
+          .speed(10)
+          .luck(0)
+          .defense(1)
+          .resistance(1)
+          .constitution(5)
+          .move(5);
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.NON_PROMOTED_MAX_STATS;
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.SWORD);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return SWORDMASTER_F;
+    }
+  },
+  SWORDMASTER_F("Swordmaster", MovementCostType.FOOT) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(19)
+          .strength(6)
+          .skill(11)
+          .speed(12)
+          .luck(0)
+          .defense(4)
+          .resistance(3)
+          .constitution(7)
+          .move(6);
+
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.get()
+          .hp(60)
+          .strength(22)
+          .skill(29)
+          .speed(30)
+          .luck(30)
+          .defense(22)
+          .resistance(25)
+          .constitution(25)
+          .move(15);
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.SWORD);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return null;
+    }
+  },
+  FIGHTER("Fighter", MovementCostType.FOOT) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(20)
+          .strength(5)
+          .skill(2)
+          .speed(4)
+          .luck(0)
+          .defense(2)
+          .resistance(0)
+          .constitution(11)
+          .move(5);
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.NON_PROMOTED_MAX_STATS;
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.AXE);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return WARRIOR;
+    }
+  },
+  WARRIOR("Warrior", MovementCostType.FOOT) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(28)
+          .skill(5)
+          .speed(6)
+          .luck(0)
+          .defense(5)
+          .resistance(0)
+          .constitution(13)
+          .move(6);
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.get()
+          .hp(60)
+          .strength(30)
+          .skill(28)
+          .speed(26)
+          .luck(30)
+          .defense(26)
+          .resistance(22)
+          .constitution(20)
+          .move(15);
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.AXE, WeaponType.BOW);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return null;
+    }
+  },
+  BRIGAND("Brigand", MovementCostType.BANDITS) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(20)
+          .strength(5)
+          .skill(1)
+          .speed(5)
+          .luck(0)
+          .defense(3)
+          .resistance(0)
+          .constitution(12)
+          .move(5);
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.NON_PROMOTED_MAX_STATS;
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.AXE);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return BERSERKER;
+    }
+  },
+  PIRATE("Pirate", MovementCostType.PIRATES) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(19)
+          .strength(4)
+          .skill(2)
+          .speed(6)
+          .luck(0)
+          .defense(3)
+          .resistance(0)
+          .constitution(10)
+          .move(5);
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.NON_PROMOTED_MAX_STATS;
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.AXE);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return BERSERKER;
+    }
+  },
+  BERSERKER("Berserker", MovementCostType.BERSERKER) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return Stats.get()
+          .hp(24)
+          .strength(7)
+          .skill(6)
+          .speed(7)
+          .luck(0)
+          .defense(6)
+          .resistance(0)
+          .constitution(13)
+          .move(6);
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return Stats.get()
+          .hp(60)
+          .strength(30)
+          .skill(29)
+          .speed(28)
+          .luck(30)
+          .defense(23)
+          .resistance(21)
+          .constitution(20)
+          .move(15);
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return EnumSet.of(WeaponType.AXE);
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return null;
+    }
   }
   ;
 

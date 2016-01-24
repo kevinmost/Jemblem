@@ -8,6 +8,7 @@ public enum MovementCostType {
   FIGHTERS,
   BANDITS,
   PIRATES,
+  BERSERKER,
   MAGES,
   FLIERS,
   NOMAD,

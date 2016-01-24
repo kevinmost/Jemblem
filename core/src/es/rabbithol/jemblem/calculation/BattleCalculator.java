@@ -2,15 +2,25 @@ package es.rabbithol.jemblem.calculation;
 
 import com.badlogic.ashley.core.Entity;
 
+import java.util.EnumSet;
+
+import javax.inject.Inject;
+
 import es.rabbithol.jemblem.JemblemGame;
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.*;
 import es.rabbithol.jemblem.model.WeaponType;
+import es.rabbithol.jemblem.model.fe_class.FEClass;
+import es.rabbithol.jemblem.model.fe_class.FEClasses;
+import es.rabbithol.jemblem.model.map.World;
 import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
 import es.rabbithol.jemblem.model.stats.Stats;
 
 public class BattleCalculator {
+
+  @Inject
+  World world;
 
   private final Info[] attackerAndDefender = new Info[2];
 
@@ -85,8 +95,8 @@ public class BattleCalculator {
   private void calculateEvade() {
     for (Info character : attackerAndDefender) {
       character.result.evade = character.result.attackSpeed * 2
-          + character.stats.luck();
-      // TODO: Terrain bonus
+          + character.stats.luck()
+          + getTileCharacterIsOn(character).terrain.avoidBuff();
     }
   }
 
@@ -117,7 +127,7 @@ public class BattleCalculator {
       final boolean isMagicAttack = WeaponType.MAGIC_WEAPON_TYPES.contains(other(character).equippedWeapon.type);
 
       character.result.defensePower = 0
-          // TODO: Terrain bonus
+          + getTileCharacterIsOn(character).terrain.defenseBuff()
           + (isMagicAttack ? character.stats.resistance() : character.stats.defense());
     }
   }
@@ -136,9 +146,13 @@ public class BattleCalculator {
   }
 
   private void calculateCritRate() {
+    final EnumSet<? extends FEClass> classesWithCritBonus = EnumSet.of(
+        FEClasses.SWORDMASTER_F,
+        FEClasses.SWORDMASTER_M,
+        FEClasses.BERSERKER
+    );
     for (Info character : attackerAndDefender) {
-      // TODO: Class crit bonus for swordmaster and berserker
-      final boolean hasClassCritBonus = false;
+      final boolean hasClassCritBonus = classesWithCritBonus.contains(character.feClass);
 
       character.result.critRate = character.equippedWeapon.crit
           + character.stats.skill() / 2
@@ -158,6 +172,10 @@ public class BattleCalculator {
       character.result.critAccuracy = character.result.critRate
           - other(character).result.critEvade;
     }
+  }
+
+  private World.Tile getTileCharacterIsOn(Info character) {
+    return world.tiles[character.position.x][character.position.y];
   }
 
   private int getWeaponTriangleDamageBonus(Info me, Info them) {
@@ -209,9 +227,15 @@ public class BattleCalculator {
 
   private static class Info {
     private final WeaponStatsComponent equippedWeapon;
+
     private final Stats stats;
+
+    private final FEClass feClass;
+
     private final WeaponProficiencyComponent weaponProficiency;
+
     private final PositionComponent position;
+
     private final Result result;
 
     public Info(Entity character) {
@@ -219,8 +243,13 @@ public class BattleCalculator {
       this.equippedWeapon = Mappers.getComponentFrom(equippedWeapon, WeaponStatsComponent.class);
 
       this.stats = Mappers.getComponentFrom(character, StatsComponent.class).stats;
+
+      this.feClass = Mappers.getComponentFrom(character, FEClassComponent.class).feClass;
+
       this.weaponProficiency = Mappers.getComponentFrom(character, WeaponProficiencyComponent.class);
+
       this.position = Mappers.getComponentFrom(character, PositionComponent.class);
+
       this.result = new Result();
     }
   }
