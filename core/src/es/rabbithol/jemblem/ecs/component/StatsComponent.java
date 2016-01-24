@@ -10,72 +10,51 @@ public class StatsComponent implements Component {
   public int defense;
   public int resistance;
   public int constitution;
+  public int aid;
   public int move;
 
-  public StatsComponent(int strength, int skill, int speed, int luck, int defense, int resistance, int constitution, int move) {
+  public StatsComponent strength(int strength) {
     this.strength = strength;
-    this.skill = skill;
-    this.speed = speed;
-    this.luck = luck;
-    this.defense = defense;
-    this.resistance = resistance;
-    this.constitution = constitution;
-    this.move = move;
+    return this;
   }
 
-  public static class Builder {
-    private int strength;
-    private int skill;
-    private int speed;
-    private int luck;
-    private int defense;
-    private int resistance;
-    private int constitution;
-    private int move;
+  public StatsComponent skill(int skill) {
+    this.skill = skill;
+    return this;
+  }
 
-    public Builder strength(int strength) {
-      this.strength = strength;
-      return this;
-    }
+  public StatsComponent speed(int speed) {
+    this.speed = speed;
+    return this;
+  }
 
-    public Builder skill(int skill) {
-      this.skill = skill;
-      return this;
-    }
+  public StatsComponent luck(int luck) {
+    this.luck = luck;
+    return this;
+  }
 
-    public Builder speed(int speed) {
-      this.speed = speed;
-      return this;
-    }
+  public StatsComponent defense(int defense) {
+    this.defense = defense;
+    return this;
+  }
 
-    public Builder luck(int luck) {
-      this.luck = luck;
-      return this;
-    }
+  public StatsComponent resistance(int resistance) {
+    this.resistance = resistance;
+    return this;
+  }
 
-    public Builder defense(int defense) {
-      this.defense = defense;
-      return this;
-    }
+  public StatsComponent constitution(int constitution) {
+    this.constitution = constitution;
+    return this;
+  }
 
-    public Builder resistance(int resistance) {
-      this.resistance = resistance;
-      return this;
-    }
+  public StatsComponent aid(int aid) {
+    this.aid = aid;
+    return this;
+  }
 
-    public Builder constitution(int constitution) {
-      this.constitution = constitution;
-      return this;
-    }
-
-    public Builder move(int move) {
-      this.move = move;
-      return this;
-    }
-
-    public StatsComponent build() {
-      return new StatsComponent(strength, skill, speed, luck, defense, resistance, constitution, move);
-    }
-
+  public StatsComponent move(int move) {
+    this.move = move;
+    return this;
   }
 }

@@ -11,6 +11,7 @@ public class CharacterBuilder {
   private PositionComponent position;
   private StatsComponent stats;
   private WeaponProficiencyComponent proficiency;
+  private NameComponent name;
 
   public CharacterBuilder health(HealthComponent health) {
     this.health = health;
@@ -37,9 +38,14 @@ public class CharacterBuilder {
     return this;
   }
 
+  public CharacterBuilder name(NameComponent name) {
+    this.name = name;
+    return this;
+  }
+
   public Entity build() {
     final Entity entity = new Entity();
-    for (Component component : new Component[]{health, inventory, position, stats, proficiency}) {
+    for (Component component : new Component[]{health, inventory, position, stats, proficiency, name}) {
       if (component != null) {
         entity.add(component);
       }
