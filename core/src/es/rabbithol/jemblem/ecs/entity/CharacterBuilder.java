@@ -1,0 +1,49 @@
+package es.rabbithol.jemblem.ecs.entity;
+
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
+
+import es.rabbithol.jemblem.ecs.component.*;
+
+public class CharacterBuilder {
+  private HealthComponent health;
+  private InventoryComponent inventory;
+  private PositionComponent position;
+  private StatsComponent stats;
+  private WeaponProficiencyComponent proficiency;
+
+  public CharacterBuilder health(HealthComponent health) {
+    this.health = health;
+    return this;
+  }
+
+  public CharacterBuilder inventory(InventoryComponent inventory) {
+    this.inventory = inventory;
+    return this;
+  }
+
+  public CharacterBuilder position(PositionComponent position) {
+    this.position = position;
+    return this;
+  }
+
+  public CharacterBuilder stats(StatsComponent stats) {
+    this.stats = stats;
+    return this;
+  }
+
+  public CharacterBuilder proficiency(WeaponProficiencyComponent proficiency) {
+    this.proficiency = proficiency;
+    return this;
+  }
+
+  public Entity build() {
+    final Entity entity = new Entity();
+    for (Component component : new Component[]{health, inventory, position, stats, proficiency}) {
+      if (component != null) {
+        entity.add(component);
+      }
+    }
+    return entity;
+  }
+}
