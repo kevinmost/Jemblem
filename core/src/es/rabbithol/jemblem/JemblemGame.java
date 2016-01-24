@@ -30,11 +30,6 @@ public class JemblemGame extends ApplicationAdapter {
         .jemblemModule(new JemblemModule(this))
         .build();
     component().inject(this);
-    final WeaponComponent weaponComponent = new WeaponComponent();
-    weaponComponent.might = 5;
-    weaponComponent.accuracy = 70;
-    final Entity entity = ashleyHelper.createEntity(weaponComponent);
-    Gdx.app.log("", "This entity is: " + entity);
   }
 
   @Override

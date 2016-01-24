@@ -7,4 +7,9 @@ import java.util.List;
 
 public class InventoryComponent implements Component {
   public List<Entity> inventory;
+  public int equippedIndex;
+
+  public Entity getEquippedInventoryItem() {
+    return inventory.get(equippedIndex);
+  }
 }

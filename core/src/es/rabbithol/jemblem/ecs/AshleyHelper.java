@@ -8,8 +8,6 @@ import com.badlogic.ashley.core.Entity;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import es.rabbithol.jemblem.JemblemGame;
-
 @Singleton
 public class AshleyHelper {
 
