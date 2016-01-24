@@ -2,34 +2,31 @@ package es.rabbithol.jemblem.calculation;
 
 import com.badlogic.ashley.core.Entity;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import es.rabbithol.jemblem.JemblemGame;
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.*;
+import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
-import es.rabbithol.jemblem.model.WeaponType;
+import es.rabbithol.jemblem.model.stats.Stats;
 
 public class BattleCalculator {
 
-  private final Info attacker;
-  private final Info defender;
+  private final Info[] attackerAndDefender = new Info[2];
 
   public BattleCalculator(Entity attacker, Entity defender) {
-    this.attacker = new Info(attacker);
-    this.defender = new Info(defender);
+    attackerAndDefender[0] = new Info(attacker);
+    attackerAndDefender[1] = new Info(defender);
     JemblemGame.game.component().inject(this);
     calculate();
   }
 
   public Result getAttackerResult() {
-    return attacker.result;
+    return attackerAndDefender[0].result;
   }
 
   public Result getDefenderResult() {
-    return defender.result;
+    return attackerAndDefender[1].result;
   }
 
   private void calculate() {
@@ -54,54 +51,54 @@ public class BattleCalculator {
   }
 
   private Info other(Info me) {
-    if (me == attacker) {
-      return defender;
+    if (me == attackerAndDefender[1]) {
+      return attackerAndDefender[0];
     }
-    return attacker;
+    return attackerAndDefender[1];
   }
 
   private void calculateAttackSpeed() {
-    for (Info character : attackerAndDefender()) {
-      character.result.attackSpeed = character.stats.speed;
-      final int encumbrance = Math.max(0, character.equippedWeapon.weight - character.stats.constitution);
+    for (Info character : attackerAndDefender) {
+      character.result.attackSpeed = character.stats.speed();
+      final int encumbrance = Math.max(0, character.equippedWeapon.weight - character.stats.constitution());
       character.result.attackSpeed -= encumbrance;
     }
   }
 
   private void calculateRepeatedAttack() {
-    for (Info character : attackerAndDefender()) {
-      final boolean willHitTwice = character.stats.speed - other(character).stats.speed >= 4;
+    for (Info character : attackerAndDefender) {
+      final boolean willHitTwice = character.stats.speed() - other(character).stats.speed() >= 4;
       character.result.numAttacks = willHitTwice ? 2 : 1;
     }
   }
 
   private void calculateHitRate() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       character.result.hitRate = character.equippedWeapon.accuracy
-          + character.stats.skill * 2
-          + character.stats.luck / 2
+          + character.stats.skill() * 2
+          + character.stats.luck() / 2
           // TODO: Support bonus
           + (shouldCharacterGetSRankBonus(character) ? 5 : 0);
     }
   }
 
   private void calculateEvade() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       character.result.evade = character.result.attackSpeed * 2
-          + character.stats.luck;
+          + character.stats.luck();
       // TODO: Terrain bonus
     }
   }
 
   private void calculateAccuracy() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       character.result.accuracy = character.result.hitRate
           - other(character).result.evade;
     }
   }
 
   private void calculateAttackPower() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       // TODO: Light Brand and Wind Sword are a pain in the ass
       // See http://fireemblem.wikia.com/wiki/Attack_(Formula)#Fire_Emblem:_Rekka_no_Ken
       final boolean shouldUseSpecialCaseFormula = false;
@@ -110,58 +107,54 @@ public class BattleCalculator {
       final int weaponEffectiveness = 1;
 
       character.result.attackPower =
-          character.stats.strength / (shouldUseSpecialCaseFormula ? 2 : 1)
+          character.stats.strength() / (shouldUseSpecialCaseFormula ? 2 : 1)
               + weaponEffectiveness * (character.equippedWeapon.might + getWeaponTriangleDamageBonus(character, other(character)));
     }
   }
 
   private void calculateDefensePower() {
-    final Set<WeaponType> magicWeaponTypes = EnumSet.of(
-        WeaponType.MAGIC_ANIMA,
-        WeaponType.MAGIC_LIGHT,
-        WeaponType.MAGIC_DARK);
-    for (Info character : attackerAndDefender()) {
-      final boolean isMagicAttack = magicWeaponTypes.contains(other(character).equippedWeapon.type);
+    for (Info character : attackerAndDefender) {
+      final boolean isMagicAttack = WeaponType.MAGIC_WEAPON_TYPES.contains(other(character).equippedWeapon.type);
 
       character.result.defensePower = 0
           // TODO: Terrain bonus
-          + (isMagicAttack ? character.stats.resistance : character.stats.defense);
+          + (isMagicAttack ? character.stats.resistance() : character.stats.defense());
     }
   }
 
   private void calculateDamage() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       character.result.damage = character.result.attackPower
           - other(character).result.defensePower;
     }
   }
 
   private void calculateCritDamage() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       character.result.critDamage = 3 * character.result.damage;
     }
   }
 
   private void calculateCritRate() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       // TODO: Class crit bonus for swordmaster and berserker
       final boolean hasClassCritBonus = false;
 
       character.result.critRate = character.equippedWeapon.crit
-          + character.stats.skill / 2
+          + character.stats.skill() / 2
           + (hasClassCritBonus ? 15 : 0)
           + (shouldCharacterGetSRankBonus(character) ? 5 : 0);
     }
   }
 
   private void calculateCritEvade() {
-    for (Info character : attackerAndDefender()) {
-      character.result.critEvade = character.stats.luck;
+    for (Info character : attackerAndDefender) {
+      character.result.critEvade = character.stats.luck();
     }
   }
 
   private void calculateCritAccuracy() {
-    for (Info character : attackerAndDefender()) {
+    for (Info character : attackerAndDefender) {
       character.result.critAccuracy = character.result.critRate
           - other(character).result.critEvade;
     }
@@ -187,17 +180,13 @@ public class BattleCalculator {
   private boolean shouldCharacterGetSRankBonus(Info character) {
     final WeaponType equippedWeaponType = character.equippedWeapon.type;
     final Rank rankInEquippedWeaponType =
-        character.weaponProficiency.proficiencies.get(equippedWeaponType);
+        character.weaponProficiency.getRankIn(equippedWeaponType);
     return rankInEquippedWeaponType == StandardRank.S;
   }
 
   private int getSpacesApart(Info attacker, Info defender) {
     return Math.abs(attacker.position.y - defender.position.y)
         + Math.abs(attacker.position.x - defender.position.x);
-  }
-
-  private Info[] attackerAndDefender() {
-    return new Info[]{attacker, defender};
   }
 
   public static class Result {
@@ -214,12 +203,13 @@ public class BattleCalculator {
     public int critEvade;
     public int critAccuracy;
 
-    private Result() {}
+    private Result() {
+    }
   }
 
   private static class Info {
     private final WeaponStatsComponent equippedWeapon;
-    private final StatsComponent stats;
+    private final Stats stats;
     private final WeaponProficiencyComponent weaponProficiency;
     private final PositionComponent position;
     private final Result result;
@@ -228,7 +218,7 @@ public class BattleCalculator {
       final Entity equippedWeapon = Mappers.getComponentFrom(character, InventoryComponent.class).getEquippedInventoryItem();
       this.equippedWeapon = Mappers.getComponentFrom(equippedWeapon, WeaponStatsComponent.class);
 
-      this.stats = Mappers.getComponentFrom(character, StatsComponent.class);
+      this.stats = Mappers.getComponentFrom(character, StatsComponent.class).stats;
       this.weaponProficiency = Mappers.getComponentFrom(character, WeaponProficiencyComponent.class);
       this.position = Mappers.getComponentFrom(character, PositionComponent.class);
       this.result = new Result();

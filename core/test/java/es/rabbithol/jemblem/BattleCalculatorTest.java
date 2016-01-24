@@ -11,8 +11,11 @@ import es.rabbithol.jemblem.ecs.component.*;
 import es.rabbithol.jemblem.ecs.entity.CharacterBuilder;
 import es.rabbithol.jemblem.ecs.entity.WeaponBuilder;
 import es.rabbithol.jemblem.model.*;
+import es.rabbithol.jemblem.model.fe_class.FEClasses;
 import es.rabbithol.jemblem.model.rank.PrfRank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
+import es.rabbithol.jemblem.model.stats.Stats;
+import es.rabbithol.jemblem.model.stats.StatsAdapter;
 
 public class BattleCalculatorTest {
   private final Engine engine = new Engine();
@@ -34,7 +37,6 @@ public class BattleCalculatorTest {
   private Entity initLyn() {
     return new CharacterBuilder()
         .name(new NameComponent("Lyn"))
-        .health(new HealthComponent(16, 16))
         .inventory(new InventoryComponent()
             .addItem(new WeaponBuilder()
                 .name(new NameComponent("Mani Katti"))
@@ -55,19 +57,9 @@ public class BattleCalculatorTest {
             )
         )
         .position(new PositionComponent(2, 2))
-        .stats(new StatsComponent()
-            .strength(4)
-            .skill(7)
-            .speed(9)
-            .luck(5)
-            .defense(2)
-            .resistance(0)
-            .move(5)
-            .constitution(5)
-            .aid(4))
+        .stats(new StatsComponent(FEClasses.LORD_LYN.baseStats()))
         .proficiency(new WeaponProficiencyComponent()
-            .proficiency(WeaponType.SWORD, StandardRank.E)
-            .overrideRank(PrfRank.MANI_KATTI))
+                .proficiency(WeaponType.SWORD, StandardRank.E))
         .build();
   }
 }

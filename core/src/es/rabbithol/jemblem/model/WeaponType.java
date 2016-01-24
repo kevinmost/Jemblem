@@ -1,6 +1,9 @@
 package es.rabbithol.jemblem.model;
 
-public enum WeaponType {
+import java.util.EnumSet;
+import java.util.Set;
+
+public enum WeaponType implements Comparable<WeaponType> {
   SWORD {
     @Override
     public WeaponType hasAdvantageOver() {
@@ -49,6 +52,9 @@ public enum WeaponType {
       return null;
     }
   };
+
+  public static final Set<WeaponType> MAGIC_WEAPON_TYPES = EnumSet.of(MAGIC_ANIMA, MAGIC_LIGHT, MAGIC_DARK);
+  public static final Set<WeaponType> PHYSICAL_WEAPON_TYPES = EnumSet.of(SWORD, LANCE, AXE, BOW);
 
   public abstract WeaponType hasAdvantageOver();
 }

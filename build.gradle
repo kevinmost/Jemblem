@@ -73,10 +73,13 @@ project(":core") {
   sourceSets.test.java.srcDirs = ["test/"]
 
   dependencies {
+    compile 'org.jetbrains:annotations:15.0'
+
     compile "com.badlogicgames.gdx:gdx:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
     compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
+
     apt "com.google.dagger:dagger-compiler:$daggerVersion"
 
     testCompile "junit:junit:4.12"

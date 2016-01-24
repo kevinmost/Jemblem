@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ public class Mappers {
 
   private static final Map<Class<?>, ComponentMapper<?>> mappers = new HashMap<>();
 
+  @Nullable
   public static <T extends Component> T getComponentFrom(Entity entity, Class<T> component) {
     return getMapper(component).get(entity);
   }

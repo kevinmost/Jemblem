@@ -7,4 +7,5 @@ import es.rabbithol.jemblem.model.WeaponType;
 
 public interface Rank {
   String rankName();
+  boolean canCharacterWield(Entity character, WeaponType thisWeaponType);
 }
