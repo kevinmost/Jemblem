@@ -1,8 +1,6 @@
 package es.rabbithol.jemblem;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
 
 import javax.inject.Inject;
 
@@ -10,7 +8,6 @@ import es.rabbithol.jemblem.dagger.DaggerJemblemComponent;
 import es.rabbithol.jemblem.dagger.JemblemComponent;
 import es.rabbithol.jemblem.dagger.JemblemModule;
 import es.rabbithol.jemblem.ecs.AshleyHelper;
-import es.rabbithol.jemblem.ecs.component.WeaponComponent;
 
 public class JemblemGame extends ApplicationAdapter {
 
@@ -32,11 +29,7 @@ public class JemblemGame extends ApplicationAdapter {
     component().inject(this);
   }
 
-  @Override
-  public void render() {
-  }
-
   public JemblemComponent component() {
-    return game.component;
+    return component;
   }
 }
