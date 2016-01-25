@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class InventoryComponent implements Component {
+  public static final InventoryComponent NULL_INVENTORY = new InventoryComponent();
+
   public List<Entity> inventory = new ArrayList<>(5);
   public int equippedIndex = -1;
 

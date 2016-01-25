@@ -3,14 +3,37 @@ package es.rabbithol.jemblem.model.fe_class;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import es.rabbithol.jemblem.ecs.component.StatsComponent;
 import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.stats.Stats;
 import es.rabbithol.jemblem.model.terrain.MovementCostType;
 
 public enum FEClasses implements FEClass {
+  NULL("", MovementCostType.NULL) {
+    @Override
+    public @NotNull Stats baseStats() {
+      return StatsComponent.NULL_STATS.stats;
+    }
+
+    @Override
+    public @NotNull Stats maxStats() {
+      return StatsComponent.NULL_STATS.stats;
+    }
+
+    @Override
+    public @NotNull Set<WeaponType> supportedWeaponTypes() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public @Nullable FEClass promotesTo() {
+      return null;
+    }
+  },
   LORD_LYN("Lord", MovementCostType.FOOT) {
     @Override
     public @NotNull Stats baseStats() {

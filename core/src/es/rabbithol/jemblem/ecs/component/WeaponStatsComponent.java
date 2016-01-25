@@ -4,8 +4,22 @@ import com.badlogic.ashley.core.Component;
 
 import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.WeaponType;
+import es.rabbithol.jemblem.model.rank.StandardRank;
 
 public class WeaponStatsComponent implements Component {
+  public static final WeaponStatsComponent NULL_WEAPON_STATS_COMPONENT = new WeaponStatsComponent()
+      .type(WeaponType.NULL)
+      .rank(StandardRank.NO)
+      .might(0)
+      .weight(0)
+      .accuracy(0)
+      .crit(0)
+      .minRange(0)
+      .maxRange(0)
+      .weaponXP(0)
+      .cost(0)
+      .reversesWeaponTriangle(false);
+
   public WeaponType type;
   public Rank rank;
   public int might;

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -15,8 +16,18 @@ public class Mappers {
   private static final Map<Class<?>, ComponentMapper<?>> mappers = new HashMap<>();
 
   @Nullable
-  public static <T extends Component> T getComponentFrom(Entity entity, Class<T> component) {
+  public static <T extends Component> T getComponentFrom(@NotNull Entity entity, @NotNull Class<T> component) {
     return getMapper(component).get(entity);
+  }
+
+  @NotNull
+  public static <T extends Component> T getComponentFrom(@NotNull Entity entity, @NotNull T defaultValue) {
+    final Component result = getComponentFrom(entity, defaultValue.getClass());
+    if (result == null) {
+      return defaultValue;
+    }
+    //noinspection unchecked
+    return (T)result;
   }
 
   @SuppressWarnings("unchecked")

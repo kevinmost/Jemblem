@@ -4,6 +4,12 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public enum WeaponType implements Comparable<WeaponType> {
+  NULL {
+    @Override
+    public WeaponType hasAdvantageOver() {
+      return null;
+    }
+  },
   SWORD {
     @Override
     public WeaponType hasAdvantageOver() {

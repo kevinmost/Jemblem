@@ -14,6 +14,8 @@ import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
 
 public class WeaponProficiencyComponent implements Component {
+  public static final WeaponProficiencyComponent NULL_PROFICIENCY = new WeaponProficiencyComponent();
+
   private final Map<WeaponType, Rank> proficiencies = new HashMap<>(WeaponType.values().length);
 
   @NotNull
