@@ -1,11 +1,11 @@
 package es.rabbithol.jemblem.model.map;
 
+import es.rabbithol.jemblem.model.terrain.Terrain;
+import es.rabbithol.jemblem.model.terrain.Terrains;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import es.rabbithol.jemblem.model.terrain.Terrain;
 
 @Singleton
 public class World {
@@ -54,7 +54,8 @@ public class World {
   }
 
   public static class Tile {
-    public Terrain terrain;
+    //TODO: Don't do this
+    public Terrain terrain = Terrains.PLAIN;
 
     public final int x;
     public final int y;

@@ -1,11 +1,9 @@
 package es.rabbithol.jemblem.model.terrain;
 
 import com.badlogic.ashley.core.Entity;
-
-import org.jetbrains.annotations.NotNull;
-
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.FEClassComponent;
+import org.jetbrains.annotations.NotNull;
 
 public enum Terrains implements Terrain {
   UNCROSSABLE("----", -1),
