@@ -8,22 +8,19 @@ import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.FEClassComponent;
 
 public enum Terrains implements Terrain {
-  UNCROSSABLE("----", -1),
+  UNCROSSABLE("----", 9000) {
+    @Override
+    protected int movementCostFor(@NotNull MovementCostType movementCostType) {
+      return 9000;
+    }
+  },
   ARENA("Arena", 1) {
     @Override
     public int avoidBuff() {
       return 10;
     }
   },
-  CLIFF("Cliff", -1) {
-    @Override
-    protected int movementCostFor(@NotNull MovementCostType movementCostType) {
-      if (movementCostType == MovementCostType.FLIERS) {
-        return 1;
-      }
-      return super.movementCostFor(movementCostType);
-    }
-  },
+  CLIFF("Cliff", 9000),
   DESERT("Desert", 2) {
     @Override
     public int avoidBuff() {
@@ -85,7 +82,7 @@ public enum Terrains implements Terrain {
         case KNIGHTS_A:
         case NOMAD:
         case ARMORS:
-          return Integer.MAX_VALUE >> 2;
+          return 9000;
         case FIGHTERS:
         case BANDITS:
         case PIRATES:
@@ -100,7 +97,7 @@ public enum Terrains implements Terrain {
     }
   },
   PLAIN("Plain", 1),
-  RIVER("River", -1) {
+  RIVER("River", 9000) {
     @Override
     protected int movementCostFor(@NotNull MovementCostType movementCostType) {
       switch (movementCostType) {
@@ -145,9 +142,6 @@ public enum Terrains implements Terrain {
   }
 
   protected int movementCostFor(@NotNull MovementCostType movementCostType) {
-    if (baseMoveCost < 0) {
-      return baseMoveCost;
-    }
     if (movementCostType == MovementCostType.FLIERS) {
       return 1;
     }

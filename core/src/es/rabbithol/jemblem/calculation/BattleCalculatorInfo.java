@@ -85,9 +85,6 @@ public class BattleCalculatorInfo {
   }
 
   public int getSpacesApart(BattleCalculatorInfo them) {
-    if (this.position == null || them.position == null) {
-      return -1;
-    }
     return Math.abs(this.position.y - them.position.y)
         + Math.abs(this.position.x - them.position.x);
   }
