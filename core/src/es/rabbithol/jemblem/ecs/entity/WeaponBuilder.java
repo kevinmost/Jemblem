@@ -2,7 +2,6 @@ package es.rabbithol.jemblem.ecs.entity;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-
 import es.rabbithol.jemblem.ecs.component.DurabilityComponent;
 import es.rabbithol.jemblem.ecs.component.NameComponent;
 import es.rabbithol.jemblem.ecs.component.WeaponStatsComponent;

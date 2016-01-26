@@ -1,16 +1,14 @@
 package es.rabbithol.jemblem.model.rank;
 
 import com.badlogic.ashley.core.Entity;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.FEClassComponent;
-import es.rabbithol.jemblem.ecs.component.NameComponent;
 import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.fe_class.FEClass;
 import es.rabbithol.jemblem.model.fe_class.FEClasses;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public enum PrfRank implements Rank {
   MANI_KATTI("Prf") {

@@ -1,14 +1,13 @@
 package es.rabbithol.jemblem.model.fe_class;
 
+import es.rabbithol.jemblem.model.WeaponType;
+import es.rabbithol.jemblem.model.stats.Stats;
+import es.rabbithol.jemblem.model.terrain.MovementCostType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Set;
-
-import es.rabbithol.jemblem.model.WeaponType;
-import es.rabbithol.jemblem.model.stats.Stats;
-import es.rabbithol.jemblem.model.terrain.MovementCostType;
 
 public enum FEClasses implements FEClass {
   LORD_LYN("Lord", MovementCostType.FOOT) {

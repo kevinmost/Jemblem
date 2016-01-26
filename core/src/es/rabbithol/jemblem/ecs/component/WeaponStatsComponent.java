@@ -1,9 +1,8 @@
 package es.rabbithol.jemblem.ecs.component;
 
 import com.badlogic.ashley.core.Component;
-
-import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.WeaponType;
+import es.rabbithol.jemblem.model.rank.Rank;
 
 public class WeaponStatsComponent implements Component {
   public WeaponType type;

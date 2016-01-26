@@ -1,12 +1,11 @@
 package es.rabbithol.jemblem.dagger;
 
 import com.badlogic.ashley.core.Engine;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import es.rabbithol.jemblem.JemblemGame;
+
+import javax.inject.Singleton;
 
 @Module
 public class JemblemModule {

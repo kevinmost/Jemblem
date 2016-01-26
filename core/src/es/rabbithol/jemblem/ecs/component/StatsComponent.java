@@ -1,10 +1,8 @@
 package es.rabbithol.jemblem.ecs.component;
 
 import com.badlogic.ashley.core.Component;
-
-import org.jetbrains.annotations.NotNull;
-
 import es.rabbithol.jemblem.model.stats.Stats;
+import org.jetbrains.annotations.NotNull;
 
 public class StatsComponent implements Component {
   @NotNull

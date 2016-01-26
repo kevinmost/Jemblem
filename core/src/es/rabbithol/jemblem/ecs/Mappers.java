@@ -3,7 +3,6 @@ package es.rabbithol.jemblem.ecs;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

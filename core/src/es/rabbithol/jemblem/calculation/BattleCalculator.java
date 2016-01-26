@@ -1,11 +1,6 @@
 package es.rabbithol.jemblem.calculation;
 
 import com.badlogic.ashley.core.Entity;
-
-import java.util.EnumSet;
-
-import javax.inject.Inject;
-
 import es.rabbithol.jemblem.JemblemGame;
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.*;
@@ -16,6 +11,9 @@ import es.rabbithol.jemblem.model.map.World;
 import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
 import es.rabbithol.jemblem.model.stats.Stats;
+
+import javax.inject.Inject;
+import java.util.EnumSet;
 
 public class BattleCalculator {
 
