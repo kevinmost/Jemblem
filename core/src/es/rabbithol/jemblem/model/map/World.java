@@ -1,6 +1,6 @@
 package es.rabbithol.jemblem.model.map;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,37 +21,66 @@ public class World {
     }
   }
 
-  @Nullable
-  public Tile getTileToRightOf(Tile tile) {
-    if (tile.x == tiles[tile.x].length - 1) {
-      return null;
+  public enum Direction {
+    ABOVE,
+    BELOW,
+    RIGHT,
+    LEFT
+  }
+
+  @NotNull
+  public Tile getTileTo(@NotNull Direction direction, @NotNull Tile tile) {
+    switch (direction) {
+      case ABOVE:
+        return getTileAbove(tile);
+      case BELOW:
+        return getTileBelow(tile);
+      case LEFT:
+        return getTileToLeftOf(tile);
+      case RIGHT:
+        return getTileToRightOf(tile);
+    }
+    throw new IllegalArgumentException("Direction can't be null!");
+  }
+
+  @NotNull
+  public Tile getTileToRightOf(@NotNull Tile tile) {
+    if (!isTileValidRange(tile)) {
+      return INVALID_TILE;
     }
     return tiles[tile.x + 1][tile.y];
   }
 
-  @Nullable
-  public Tile getTileToLeftOf(Tile tile) {
-    if (tile.x == 0) {
-      return null;
+  @NotNull
+  public Tile getTileToLeftOf(@NotNull Tile tile) {
+    if (!isTileValidRange(tile)) {
+      return INVALID_TILE;
     }
     return tiles[tile.x - 1][tile.y];
   }
 
-  @Nullable
-  public Tile getTileAbove(Tile tile) {
-    if (tile.y == 0) {
-      return null;
+  @NotNull
+  public Tile getTileAbove(@NotNull Tile tile) {
+    if (!isTileValidRange(tile)) {
+      return INVALID_TILE;
     }
     return tiles[tile.x][tile.y - 1];
   }
 
-  @Nullable
-  public Tile getTileBelow(Tile tile) {
-    if (tile.y == tiles.length - 1) {
-      return null;
+  @NotNull
+  public Tile getTileBelow(@NotNull Tile tile) {
+    if (!isTileValidRange(tile)) {
+      return INVALID_TILE;
     }
     return tiles[tile.x][tile.y + 1];
   }
+
+  private boolean isTileValidRange(@NotNull Tile tile) {
+    return 0 <= tile.x && tile.x <= tiles[tile.x].length - 1 &&
+        0 <= tile.y && tile.y <= tiles.length - 1;
+  }
+
+  private static Tile INVALID_TILE = new Tile(-1, -1);
 
   public static class Tile {
     public Terrain terrain;
