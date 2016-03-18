@@ -2,9 +2,9 @@ package es.rabbithol.jemblem.calculation;
 
 import com.badlogic.ashley.core.Entity;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.fe_class.FEClass;
@@ -31,7 +31,7 @@ public class BattleCalculator {
 
   private void calculate() {
     // Using FE7 formulas from: http://fireemblem.wikia.com/wiki/Battle_Formulas
-    Arrays.<BiConsumer<BattleCalculatorInfo, BattleCalculatorInfo>>asList(
+    Stream.<BiConsumer<BattleCalculatorInfo, BattleCalculatorInfo>>of(
         this::calculateAttackSpeed,
 
         this::calculateRepeatedAttack,
@@ -49,7 +49,6 @@ public class BattleCalculator {
         this::calculateCritRate,
         this::calculateCritEvade,
         this::calculateCritAccuracy)
-        .stream()
         .forEach(method -> {
           method.accept(attacker, defender);
           method.accept(defender, attacker);
