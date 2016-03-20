@@ -41,7 +41,7 @@ public class BattleCalculatorInfo {
   World world;
 
   public BattleCalculatorInfo(Entity character) {
-    JemblemGame.game.component().inject(this);
+    JemblemGame.get().component().inject(this);
 
     final Entity equippedWeaponEntity = NullUtil
         .preventNull(Mappers.getComponentFrom(character, InventoryComponent.class),

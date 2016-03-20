@@ -15,6 +15,6 @@ public class HtmlLauncher extends GwtApplication {
 
   @Override
   public ApplicationListener getApplicationListener() {
-    return JemblemGame.game;
+    return JemblemGame.get();
   }
 }

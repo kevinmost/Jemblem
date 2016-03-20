@@ -1,4 +1,4 @@
-package java.es.rabbithol.jemblem;
+package es.rabbithol.jemblem;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -7,17 +7,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import es.rabbithol.jemblem.calculation.BattleCalculator;
-import es.rabbithol.jemblem.ecs.component.*;
+import es.rabbithol.jemblem.ecs.component.DurabilityComponent;
+import es.rabbithol.jemblem.ecs.component.InventoryComponent;
+import es.rabbithol.jemblem.ecs.component.NameComponent;
+import es.rabbithol.jemblem.ecs.component.PositionComponent;
+import es.rabbithol.jemblem.ecs.component.StatsComponent;
+import es.rabbithol.jemblem.ecs.component.WeaponProficiencyComponent;
+import es.rabbithol.jemblem.ecs.component.WeaponStatsComponent;
 import es.rabbithol.jemblem.ecs.entity.CharacterBuilder;
 import es.rabbithol.jemblem.ecs.entity.WeaponBuilder;
-import es.rabbithol.jemblem.model.*;
+import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.fe_class.FEClasses;
 import es.rabbithol.jemblem.model.rank.PrfRank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
-import es.rabbithol.jemblem.model.stats.Stats;
-import es.rabbithol.jemblem.model.stats.StatsAdapter;
 
 public class BattleCalculatorTest {
+
+  private TestJemblemGame testJemblemGame;
+
+  @Before
+  public void instantiateGameObject() {
+    testJemblemGame = new TestJemblemGame();
+  }
+
   private final Engine engine = new Engine();
 
   private final Entity lyn = new CharacterBuilder()
