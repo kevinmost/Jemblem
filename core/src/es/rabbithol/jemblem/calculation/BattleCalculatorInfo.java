@@ -4,18 +4,25 @@ import com.badlogic.ashley.core.Entity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import es.rabbithol.jemblem.JemblemGame;
 import es.rabbithol.jemblem.ecs.Mappers;
-import es.rabbithol.jemblem.ecs.component.*;
+import es.rabbithol.jemblem.ecs.component.FEClassComponent;
+import es.rabbithol.jemblem.ecs.component.InventoryComponent;
+import es.rabbithol.jemblem.ecs.component.PositionComponent;
+import es.rabbithol.jemblem.ecs.component.StatsComponent;
+import es.rabbithol.jemblem.ecs.component.WeaponProficiencyComponent;
+import es.rabbithol.jemblem.ecs.component.WeaponStatsComponent;
 import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.fe_class.FEClass;
+import es.rabbithol.jemblem.model.map.Tile;
 import es.rabbithol.jemblem.model.map.World;
 import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
 import es.rabbithol.jemblem.model.stats.Stats;
-import es.rabbithol.jemblem.util.NullUtil;
 
 public class BattleCalculatorInfo {
 
@@ -43,11 +50,15 @@ public class BattleCalculatorInfo {
   public BattleCalculatorInfo(Entity character) {
     JemblemGame.get().component().inject(this);
 
-    final Entity equippedWeaponEntity = NullUtil
-        .preventNull(Mappers.getComponentFrom(character, InventoryComponent.class),
-            InventoryComponent.NULL_INVENTORY)
+    final Optional<Entity> equippedWeapon = Mappers.getComponentFrom(character, InventoryComponent.class)
+        .orElseThrow(() -> new IllegalStateException("Characters must have inventories!"))
         .getEquippedInventoryItem();
-    this.equippedWeapon = Mappers.getComponentFrom(equippedWeaponEntity, WeaponStatsComponent.NULL_WEAPON_STATS_COMPONENT);
+
+    if (equippedWeapon.isPresent()) {
+      this.equippedWeapon = Mappers.getComponentFrom(equippedWeapon.get(), WeaponStatsComponent.NULL_WEAPON_STATS_COMPONENT);
+    } else {
+      this.equippedWeapon = WeaponStatsComponent.NULL_WEAPON_STATS_COMPONENT;
+    }
 
     this.stats = Mappers.getComponentFrom(character, StatsComponent.NULL_STATS).stats;
 
@@ -89,7 +100,7 @@ public class BattleCalculatorInfo {
         + Math.abs(this.position.x - them.position.x);
   }
 
-  public World.Tile getTileCharacterIsOn() {
+  public Tile getTileCharacterIsOn() {
     return world.tiles[position.x][position.y];
   }
 }

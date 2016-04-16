@@ -31,8 +31,9 @@ public enum StandardRank implements Rank {
 
   @Override
   public boolean canCharacterWield(Entity character, WeaponType thisWeaponType) {
-    final WeaponProficiencyComponent proficiencies =
-        Mappers.getComponentFrom(character, WeaponProficiencyComponent.class);
+    final WeaponProficiencyComponent proficiencies = Mappers
+        .getComponentFrom(character, WeaponProficiencyComponent.class)
+        .orElseThrow(() -> new IllegalStateException("Characters must have a WeaponProficiencyComponent"));
     if (proficiencies == null) {
       return false;
     }

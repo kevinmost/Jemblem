@@ -31,7 +31,7 @@ allprojects {
     box2DLightsVersion = '1.4'
     ashleyVersion = '1.7.0'
     aiVersion = '1.7.0'
-    daggerVersion = '2.0.2'
+    daggerVersion = '2.1'
   }
 
   repositories {
@@ -55,28 +55,30 @@ project(":desktop") {
   }
 }
 
-project(":html") {
-  apply plugin: "gwt"
-  apply plugin: "war"
-
-
-  dependencies {
-    compile project(":core")
-    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-    compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
-    compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
-    compile "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
-  }
-}
+// TODO: Bring this back when GWT supports Java 1.8
+//project(":html") {
+//  apply plugin: "gwt"
+//  apply plugin: "war"
+//
+//
+//  dependencies {
+//    compile project(":core")
+//    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+//    compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+//    compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+//    compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
+//    compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
+//    compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
+//    compile "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
+//  }
+//}
 
 project(":core") {
   apply plugin: "java"
   apply plugin: "net.ltgt.apt"
 
-  sourceSets.test.java.srcDirs = ["test/"]
+  sourceSets.main.java.srcDirs = ["src/"]
+  sourceSets.test.java.srcDirs = ["src/", "test/"]
 
   dependencies {
     compile 'org.jetbrains:annotations:15.0'
@@ -94,5 +96,8 @@ project(":core") {
     testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    testCompile "com.google.dagger:dagger:$daggerVersion"
+
+    testApt "com.google.dagger:dagger-compiler:$daggerVersion"
   }
 }

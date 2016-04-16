@@ -2,10 +2,10 @@ package es.rabbithol.jemblem.model.map;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import es.rabbithol.jemblem.model.terrain.Terrain;
 
 @Singleton
 public class World {
@@ -21,78 +21,48 @@ public class World {
     }
   }
 
-  public enum Direction {
-    ABOVE,
-    BELOW,
-    RIGHT,
-    LEFT
-  }
 
   @NotNull
-  public Tile getTileTo(@NotNull Direction direction, @NotNull Tile tile) {
+  public Optional<Tile> getTileTo(@NotNull Direction direction, @NotNull Tile tile) {
     switch (direction) {
-      case ABOVE:
+      case NORTH:
         return getTileAbove(tile);
-      case BELOW:
+      case SOUTH:
         return getTileBelow(tile);
-      case LEFT:
+      case WEST:
         return getTileToLeftOf(tile);
-      case RIGHT:
+      case EAST:
         return getTileToRightOf(tile);
     }
     throw new IllegalArgumentException("Direction can't be null!");
   }
 
-  @NotNull
-  public Tile getTileToRightOf(@NotNull Tile tile) {
-    if (!isTileValidRange(tile)) {
-      return INVALID_TILE;
+  public Optional<Tile> getTileToRightOf(@NotNull Tile tile) {
+    return maybeGetTile(tile.x + 1, tile.y);
+  }
+
+  public Optional<Tile> getTileToLeftOf(@NotNull Tile tile) {
+    return maybeGetTile(tile.x - 1, tile.y);
+  }
+
+  public Optional<Tile> getTileAbove(@NotNull Tile tile) {
+    return maybeGetTile(tile.x, tile.y - 1);
+  }
+
+  public Optional<Tile> getTileBelow(@NotNull Tile tile) {
+    return maybeGetTile(tile.x, tile.y + 1);
+  }
+
+  private Optional<Tile> maybeGetTile(int x, int y) {
+    if (willTileBeInValidRange(x, y)) {
+      return Optional.empty();
     }
-    return tiles[tile.x + 1][tile.y];
+    return Optional.of(tiles[x][y]);
   }
 
-  @NotNull
-  public Tile getTileToLeftOf(@NotNull Tile tile) {
-    if (!isTileValidRange(tile)) {
-      return INVALID_TILE;
-    }
-    return tiles[tile.x - 1][tile.y];
+  private boolean willTileBeInValidRange(int x, int y) {
+    return 0 <= x && x <= tiles.length - 1 &&
+        0 <= y && y <= tiles[x].length - 1;
   }
 
-  @NotNull
-  public Tile getTileAbove(@NotNull Tile tile) {
-    if (!isTileValidRange(tile)) {
-      return INVALID_TILE;
-    }
-    return tiles[tile.x][tile.y - 1];
-  }
-
-  @NotNull
-  public Tile getTileBelow(@NotNull Tile tile) {
-    if (!isTileValidRange(tile)) {
-      return INVALID_TILE;
-    }
-    return tiles[tile.x][tile.y + 1];
-  }
-
-  private boolean isTileValidRange(@NotNull Tile tile) {
-    return 0 <= tile.x && tile.x <= tiles[tile.x].length - 1 &&
-        0 <= tile.y && tile.y <= tiles.length - 1;
-  }
-
-  private static Tile INVALID_TILE = new Tile(-1, -1);
-
-  public static class Tile {
-    public Terrain terrain;
-
-    public final int x;
-    public final int y;
-
-    public Tile(int x, int y) {
-      this.x = x;
-      this.y = y;
-    }
-
-    // TODO: Sprite
-  }
 }

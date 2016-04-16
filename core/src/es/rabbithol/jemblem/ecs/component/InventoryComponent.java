@@ -6,12 +6,13 @@ import com.badlogic.ashley.core.Entity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class InventoryComponent implements Component {
   public static final InventoryComponent NULL_INVENTORY = new InventoryComponent();
 
-  public List<Entity> inventory = new ArrayList<>(5);
-  public int equippedIndex = -1;
+  private List<Entity> inventory = new ArrayList<>();
+  private int equippedIndex = -1;
 
   public InventoryComponent addItem(Entity item) {
     inventory.add(item);
@@ -40,12 +41,15 @@ public class InventoryComponent implements Component {
     return this;
   }
 
-  public InventoryComponent equippedIndex(int equippedIndex) {
+  public InventoryComponent setEquippedIndex(int equippedIndex) {
     this.equippedIndex = equippedIndex;
     return this;
   }
 
-  public Entity getEquippedInventoryItem() {
-    return inventory.get(equippedIndex);
+  public Optional<Entity> getEquippedInventoryItem() {
+    if (0 <= equippedIndex && equippedIndex <= inventory.size()) {
+      return Optional.of(inventory.get(equippedIndex));
+    }
+    return Optional.empty();
   }
 }

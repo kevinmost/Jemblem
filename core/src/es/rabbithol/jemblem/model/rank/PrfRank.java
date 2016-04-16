@@ -7,7 +7,6 @@ import java.util.Set;
 
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.FEClassComponent;
-import es.rabbithol.jemblem.ecs.component.NameComponent;
 import es.rabbithol.jemblem.model.WeaponType;
 import es.rabbithol.jemblem.model.fe_class.FEClass;
 import es.rabbithol.jemblem.model.fe_class.FEClasses;
@@ -21,8 +20,7 @@ public enum PrfRank implements Rank {
 
     @Override
     public boolean canCharacterWield(Entity character, WeaponType thisWeaponType) {
-      return classesThatCanWieldManiKatti.contains(
-          Mappers.getComponentFrom(character, FEClassComponent.class).feClass);
+      return classesThatCanWieldManiKatti.contains(getFEClassFromCharacter(character));
     }
   },
   WO_DAO(StandardRank.D) {
@@ -36,8 +34,7 @@ public enum PrfRank implements Rank {
 
     @Override
     public boolean canCharacterWield(Entity character, WeaponType thisWeaponType) {
-      return classesThatCanWieldWoDao.contains(
-          Mappers.getComponentFrom(character, FEClassComponent.class).feClass);
+      return classesThatCanWieldWoDao.contains(getFEClassFromCharacter(character));
     }
   }
   ;
@@ -55,5 +52,12 @@ public enum PrfRank implements Rank {
   @Override
   public final String rankName() {
     return displayName;
+  }
+
+  private static FEClass getFEClassFromCharacter(Entity character) {
+    return Mappers
+        .getComponentFrom(character, FEClassComponent.class)
+        .orElseThrow(() -> new IllegalStateException("Characters must have a FEClassComponent"))
+        .feClass;
   }
 }

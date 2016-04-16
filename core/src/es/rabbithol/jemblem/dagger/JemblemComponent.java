@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import es.rabbithol.jemblem.JemblemGame;
-import es.rabbithol.jemblem.calculation.BattleCalculator;
 import es.rabbithol.jemblem.calculation.BattleCalculatorInfo;
 
 @Singleton

@@ -156,7 +156,7 @@ public enum Terrains implements Terrain {
   @Override
   public final int movementCostFor(@NotNull Entity character) {
     final FEClassComponent characterFEClass =
-        Mappers.getComponentFrom(character, FEClassComponent.class);
+        Mappers.getComponentFrom(character, FEClassComponent.class).get();
     if (characterFEClass == null) {
       throw new IllegalArgumentException("Entity given has no FEClassComponent");
     }

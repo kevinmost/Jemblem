@@ -19,13 +19,13 @@ public class JemblemModule {
 
   @Provides
   @Singleton
-  Engine provideEngine() {
+  public Engine engine() {
     return new Engine();
   }
 
   @Provides
   @Singleton
-  JemblemGame provideGame() {
+  public JemblemGame game() {
     return game;
   }
 }

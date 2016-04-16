@@ -1,12 +1,7 @@
-package es.rabbithol.jemblem;
+package es.rabbithol.jemblem.unit_tests;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import es.rabbithol.jemblem.calculation.BattleCalculator;
 import es.rabbithol.jemblem.ecs.component.DurabilityComponent;
 import es.rabbithol.jemblem.ecs.component.InventoryComponent;
 import es.rabbithol.jemblem.ecs.component.NameComponent;
@@ -21,16 +16,7 @@ import es.rabbithol.jemblem.model.fe_class.FEClasses;
 import es.rabbithol.jemblem.model.rank.PrfRank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
 
-public class BattleCalculatorTest {
-
-  private TestJemblemGame testJemblemGame;
-
-  @Before
-  public void instantiateGameObject() {
-    testJemblemGame = new TestJemblemGame();
-  }
-
-  private final Engine engine = new Engine();
+public class BattleCalculatorTest extends BaseJemblemTest {
 
   private final Entity lyn = new CharacterBuilder()
       .name(new NameComponent("Lyn"))
@@ -61,8 +47,8 @@ public class BattleCalculatorTest {
   private final Entity eliwood = new Entity();
   private final Entity hector = new Entity();
 
-  @Test
-  public void foo() {
-    final BattleCalculator calculator = new BattleCalculator(lyn, eliwood);
-  }
+//  @Test
+//  public void foo() {
+//    final BattleCalculator calculator = new BattleCalculator(lyn, eliwood);
+//  }
 }

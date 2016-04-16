@@ -6,6 +6,11 @@ import es.rabbithol.jemblem.dagger.JemblemModule;
 
 public class TestJemblemGame extends JemblemGame {
 
+//  public static @NotNull JemblemTestComponent get() {
+////    return J/**/emblemGame.get().component();
+//    return null;
+//  }
+
   @Override
   protected JemblemComponent createComponent() {
     return DaggerJemblemComponent.builder()
