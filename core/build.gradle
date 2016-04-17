@@ -1,8 +1,27 @@
 apply plugin: "java"
+apply plugin: "net.ltgt.apt"
 
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = ["src/main"]
+sourceSets.test.java.srcDirs = ["src/test"]
 
+dependencies {
 
+  compile(
+      "org.jetbrains:annotations:15.0",
+      "com.badlogicgames.gdx:gdx:$gdxVersion",
+      "com.badlogicgames.gdx:gdx-controllers:$gdxVersion",
+      "com.badlogicgames.ashley:ashley:$ashleyVersion",
+  )
+
+  testCompile(
+      "junit:junit:4.12",
+      "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion",
+      "com.badlogicgames.gdx:gdx:$gdxVersion",
+      "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop",
+      "com.badlogicgames.gdx:gdx-box2d:$gdxVersion",
+      "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop",
+  )
+}

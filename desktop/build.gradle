@@ -1,6 +1,7 @@
 apply plugin: "java"
 
-sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.java.srcDirs = ["src/main"]
+sourceSets.test.java.srcDirs = ["src/test"]
 
 project.ext.mainClassName = "es.rabbithol.jemblem.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets");
@@ -25,3 +26,15 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
+
+dependencies {
+  compile(
+      project(":core"),
+      "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion",
+      "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop",
+      "com.badlogicgames.gdx:gdx-tools:$gdxVersion",
+      "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion",
+      "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop",
+  )
+
+}
