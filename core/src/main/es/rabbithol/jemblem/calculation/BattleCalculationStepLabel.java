@@ -65,6 +65,16 @@ public enum BattleCalculationStepLabel {
     @Override
     public BattleCalculationStep getDefaultImplementation() {
       return (me, them) -> {
+        me.result.accuracy = me.result.hitRate
+            - them.result.evade;
+        return true;
+      };
+    }
+  },
+  ATTACK_POWER {
+    @Override
+    public BattleCalculationStep getDefaultImplementation() {
+      return (me, them) -> {
         // TODO: Light Brand and Wind Sword are a pain in the ass
         // See http://fireemblem.wikia.com/wiki/Attack_(Formula)#Fire_Emblem:_Rekka_no_Ken
         final boolean shouldUseSpecialCaseFormula = false;
@@ -79,7 +89,7 @@ public enum BattleCalculationStepLabel {
       };
     }
   },
-  ATTACK_POWER {
+  DEFENSE_POWER {
     @Override
     public BattleCalculationStep getDefaultImplementation() {
       return (me, them) -> {
@@ -88,16 +98,6 @@ public enum BattleCalculationStepLabel {
         me.result.defensePower = 0
             + me.getTileCharacterIsOn().terrain.defenseBuff()
             + (isMagicAttack ? me.stats.resistance() : me.stats.defense());
-        return true;
-      };
-    }
-  },
-  DEFENSE_POWER {
-    @Override
-    public BattleCalculationStep getDefaultImplementation() {
-      return (me, them) -> {
-        me.result.damage = me.result.attackPower
-            - them.result.defensePower;
         return true;
       };
     }
