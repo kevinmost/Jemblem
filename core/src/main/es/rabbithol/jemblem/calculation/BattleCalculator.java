@@ -4,10 +4,9 @@ import com.badlogic.ashley.core.Entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,14 +35,26 @@ public class BattleCalculator {
     // Using FE7 formulas from: http://fireemblem.wikia.com/wiki/Battle_Formulas
     final Map<BattleCalculationStepLabel, List<BattleCalculationStep>> attackerSpecialSteps =
         getSpecialStepsFor(attacker);
+    final Map<BattleCalculationStepLabel, List<BattleCalculationStep>> defenderSpecialSteps =
+        getSpecialStepsFor(defender);
     Stream.of(BattleCalculationStepLabel.values())
         .forEach(step -> {
-          final BattleCalculationStep defaultImpl = step.getDefaultImplementation();
-          attackerSpecialSteps.get(step)
-              .stream()
-              .forEach(specialCalculation -> specialCalculation.calculate(attacker, defender));
-          defaultImpl.calculate(attacker, defender);
-          defaultImpl.compose(defenderSkills).calculate(defender, attacker);
+          final List<BattleCalculationStep> attackerAllSteps = new ArrayList<>();
+          attackerAllSteps.addAll(attackerSpecialSteps.get(step));
+          attackerAllSteps.add(step.getDefaultImplementation());
+          for (BattleCalculationStep attackerStep : attackerAllSteps) {
+            if (!attackerStep.calculate(attacker, defender)) {
+              break;
+            }
+          }
+          final List<BattleCalculationStep> defenderAllSteps = new ArrayList<>();
+          defenderAllSteps.addAll(defenderSpecialSteps.get(step));
+          defenderAllSteps.add(step.getDefaultImplementation());
+          for (BattleCalculationStep defenderStep : defenderAllSteps) {
+            if (!defenderStep.calculate(defender, attacker)) {
+              break;
+            }
+          }
         });
   }
 
@@ -51,33 +62,15 @@ public class BattleCalculator {
       BattleCalculatorInfo character) {
     return character.skills.stream()
         .map(CalculationSkill::modification)
-        .map(new MapValuesToSingletonListFunction())
+        .map(inputList -> inputList.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            entry -> Collections.singletonList(entry.getValue()))))
         .map(Map::entrySet)
         .flatMap(Collection::stream)
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> {
-          final ArrayList<BattleCalculationStep> merged = new ArrayList<>();
-          merged.addAll(left);
-          merged.addAll(right);
-          return merged;
-        }));
-  }
-
-  // TODO: This is a monument to my sins
-  private static class MapValuesToSingletonListFunction implements
-      Function<Map<BattleCalculationStepLabel, BattleCalculationStep>,
-          Map<BattleCalculationStepLabel, List<BattleCalculationStep>>> {
-    @Override
-    public Map<BattleCalculationStepLabel, List<BattleCalculationStep>> apply(
-        Map<BattleCalculationStepLabel, BattleCalculationStep> inputList) {
-
-      final Map<BattleCalculationStepLabel, List<BattleCalculationStep>> result = new HashMap<>();
-
-      for (Map.Entry<BattleCalculationStepLabel, BattleCalculationStep> step : inputList.entrySet()) {
-        final List<BattleCalculationStep> singletonList = new ArrayList<>();
-        singletonList.add(step.getValue());
-        result.put(step.getKey(), singletonList);
-      }
-      return result;
-    }
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+            (left, right) -> Stream
+                .concat(left.stream(), right.stream())
+                .collect(Collectors.toList())
+        ));
   }
 }
