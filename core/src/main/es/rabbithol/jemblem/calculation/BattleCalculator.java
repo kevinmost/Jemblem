@@ -2,13 +2,16 @@ package es.rabbithol.jemblem.calculation;
 
 import com.badlogic.ashley.core.Entity;
 
-import java.util.EnumSet;
-import java.util.function.BiConsumer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import es.rabbithol.jemblem.model.WeaponType;
-import es.rabbithol.jemblem.model.fe_class.FEClass;
-import es.rabbithol.jemblem.model.fe_class.FEClasses;
+import es.rabbithol.jemblem.model.skill.CalculationSkill;
 
 public class BattleCalculator {
 
@@ -31,117 +34,50 @@ public class BattleCalculator {
 
   private void calculate() {
     // Using FE7 formulas from: http://fireemblem.wikia.com/wiki/Battle_Formulas
-    Stream.<BiConsumer<BattleCalculatorInfo, BattleCalculatorInfo>>of(
-        this::calculateAbleToHit,
-
-        this::calculateAttackSpeed,
-
-        this::calculateRepeatedAttack,
-
-        this::calculateHitRate,
-        this::calculateEvade,
-        this::calculateAccuracy,
-
-        this::calculateAttackPower,
-        this::calculateDefensePower,
-
-        this::calculateDamage,
-        this::calculateCritDamage,
-
-        this::calculateCritRate,
-        this::calculateCritEvade,
-        this::calculateCritAccuracy)
-        .forEach(method -> {
-          method.accept(attacker, defender);
-          method.accept(defender, attacker);
+    final Map<BattleCalculationStepLabel, List<BattleCalculationStep>> attackerSpecialSteps =
+        getSpecialStepsFor(attacker);
+    Stream.of(BattleCalculationStepLabel.values())
+        .forEach(step -> {
+          final BattleCalculationStep defaultImpl = step.getDefaultImplementation();
+          attackerSpecialSteps.get(step)
+              .stream()
+              .forEach(specialCalculation -> specialCalculation.calculate(attacker, defender));
+          defaultImpl.calculate(attacker, defender);
+          defaultImpl.compose(defenderSkills).calculate(defender, attacker);
         });
   }
 
-  private void calculateAbleToHit(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.withinRange = me.equippedWeapon.rangeStrategy.canHit(me.entity, them.position);
+  private Map<BattleCalculationStepLabel, List<BattleCalculationStep>> getSpecialStepsFor(
+      BattleCalculatorInfo character) {
+    return character.skills.stream()
+        .map(CalculationSkill::modification)
+        .map(new MapValuesToSingletonListFunction())
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> {
+          final ArrayList<BattleCalculationStep> merged = new ArrayList<>();
+          merged.addAll(left);
+          merged.addAll(right);
+          return merged;
+        }));
   }
 
-  private void calculateAttackSpeed(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.attackSpeed = me.stats.speed();
-    final int encumbrance = Math.max(0, me.equippedWeapon.weight - me.stats.constitution());
-    me.result.attackSpeed -= encumbrance;
+  // TODO: This is a monument to my sins
+  private static class MapValuesToSingletonListFunction implements
+      Function<Map<BattleCalculationStepLabel, BattleCalculationStep>,
+          Map<BattleCalculationStepLabel, List<BattleCalculationStep>>> {
+    @Override
+    public Map<BattleCalculationStepLabel, List<BattleCalculationStep>> apply(
+        Map<BattleCalculationStepLabel, BattleCalculationStep> inputList) {
+
+      final Map<BattleCalculationStepLabel, List<BattleCalculationStep>> result = new HashMap<>();
+
+      for (Map.Entry<BattleCalculationStepLabel, BattleCalculationStep> step : inputList.entrySet()) {
+        final List<BattleCalculationStep> singletonList = new ArrayList<>();
+        singletonList.add(step.getValue());
+        result.put(step.getKey(), singletonList);
+      }
+      return result;
+    }
   }
-
-  private void calculateRepeatedAttack(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    final boolean willHitTwice = me.stats.speed() - them.stats.speed() >= 4;
-    me.result.numAttacks = willHitTwice ? 2 : 1;
-  }
-
-  private void calculateHitRate(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.hitRate = me.equippedWeapon.accuracy
-        + me.stats.skill() * 2
-        + me.stats.luck() / 2
-        // TODO: Support bonus
-        + (me.shouldCharacterGetSRankBonus() ? 5 : 0);
-  }
-
-  private void calculateEvade(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.evade = me.result.attackSpeed * 2
-        + me.stats.luck()
-        + me.getTileCharacterIsOn().terrain.avoidBuff();
-  }
-
-  private void calculateAccuracy(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.accuracy = me.result.hitRate
-        - them.result.evade;
-  }
-
-  private void calculateAttackPower(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    // TODO: Light Brand and Wind Sword are a pain in the ass
-    // See http://fireemblem.wikia.com/wiki/Attack_(Formula)#Fire_Emblem:_Rekka_no_Ken
-    final boolean shouldUseSpecialCaseFormula = false;
-
-    // TODO: Weapon effectiveness
-    final int weaponEffectiveness = 1;
-
-    me.result.attackPower =
-        me.stats.strength() / (shouldUseSpecialCaseFormula ? 2 : 1)
-            + weaponEffectiveness * (me.equippedWeapon.might + me.getWeaponTriangleDamageBonus(them));
-  }
-
-  private void calculateDefensePower(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    final boolean isMagicAttack = WeaponType.MAGIC_WEAPON_TYPES.contains(them.equippedWeapon.type);
-
-    me.result.defensePower = 0
-        + me.getTileCharacterIsOn().terrain.defenseBuff()
-        + (isMagicAttack ? me.stats.resistance() : me.stats.defense());
-  }
-
-  private void calculateDamage(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.damage = me.result.attackPower
-        - them.result.defensePower;
-  }
-
-  private void calculateCritDamage(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.critDamage = 3 * me.result.damage;
-  }
-
-  private void calculateCritRate(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    final EnumSet<? extends FEClass> classesWithCritBonus = EnumSet.of(
-        FEClasses.SWORDMASTER_F,
-        FEClasses.SWORDMASTER_M,
-        FEClasses.BERSERKER
-    );
-    final boolean hasClassCritBonus = classesWithCritBonus.contains(me.feClass);
-
-    me.result.critRate = me.equippedWeapon.crit
-        + me.stats.skill() / 2
-        + (hasClassCritBonus ? 15 : 0)
-        + (me.shouldCharacterGetSRankBonus() ? 5 : 0);
-  }
-
-  private void calculateCritEvade(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.critEvade = me.stats.luck();
-  }
-
-  private void calculateCritAccuracy(BattleCalculatorInfo me, BattleCalculatorInfo them) {
-    me.result.critAccuracy = me.result.critRate
-        - them.result.critEvade;
-  }
-
 }

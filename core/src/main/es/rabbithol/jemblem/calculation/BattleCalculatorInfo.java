@@ -4,14 +4,17 @@ import com.badlogic.ashley.core.Entity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import es.rabbithol.jemblem.JemblemGame;
 import es.rabbithol.jemblem.ecs.Mappers;
 import es.rabbithol.jemblem.ecs.component.FEClassComponent;
 import es.rabbithol.jemblem.ecs.component.InventoryComponent;
 import es.rabbithol.jemblem.ecs.component.PositionComponent;
+import es.rabbithol.jemblem.ecs.component.SkillsComponent;
 import es.rabbithol.jemblem.ecs.component.StatsComponent;
 import es.rabbithol.jemblem.ecs.component.WeaponProficiencyComponent;
 import es.rabbithol.jemblem.ecs.component.WeaponStatsComponent;
@@ -21,6 +24,7 @@ import es.rabbithol.jemblem.model.map.Tile;
 import es.rabbithol.jemblem.model.map.World;
 import es.rabbithol.jemblem.model.rank.Rank;
 import es.rabbithol.jemblem.model.rank.StandardRank;
+import es.rabbithol.jemblem.model.skill.CalculationSkill;
 import es.rabbithol.jemblem.model.stats.Stats;
 
 public class BattleCalculatorInfo {
@@ -49,6 +53,9 @@ public class BattleCalculatorInfo {
   @NotNull
   private final World world;
 
+  @NotNull
+  public final List<CalculationSkill> skills;
+
   public BattleCalculatorInfo(@NotNull Entity character) {
     this.entity = character;
     this.world = JemblemGame.get().world;
@@ -62,6 +69,18 @@ public class BattleCalculatorInfo {
     } else {
       this.equippedWeapon = WeaponStatsComponent.NULL_WEAPON_STATS_COMPONENT;
     }
+
+    this.skills = Mappers.getComponentFrom(character, SkillsComponent.class)
+        .orElseThrow(() -> new IllegalStateException("Characters must have SkillComponent!"))
+        .skills
+        .stream()
+        .flatMap(skill -> {
+          if (skill instanceof CalculationSkill) {
+            return Stream.of((CalculationSkill)skill);
+          }
+          return Stream.empty();
+        })
+        .collect(Collectors.toList());
 
     this.stats = Mappers.getComponentFrom(character, StatsComponent.NULL_STATS).stats;
 
